@@ -22,15 +22,12 @@ public class Main {
 		map = new int[N][N];
 
 		int max = Integer.MIN_VALUE;
-		int min = Integer.MAX_VALUE;
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
 				if (max < map[i][j])
 					max = map[i][j];
-				if (min > map[i][j])
-					min = map[i][j];
 			}
 		}
 		int cnt;
