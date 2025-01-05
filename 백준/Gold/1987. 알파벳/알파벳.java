@@ -1,42 +1,45 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int R, C, answer = 0;
-    static char[][] graph;
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static HashSet<Character> alphabet;
+    static int r, c;
+    static int[][] map;
+    static boolean[] isVisited;
+    static int ans = 0;
+    static int[] dr = {1, -1, 0, 0};
+    static int[] dc = {0, 0, 1, -1};
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
 
-        R = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
-        graph = new char[R][C];
-
-        for (int i = 0; i < R; i++) {
-            String input = br.readLine();
-            for (int j = 0; j < C; j++) {
-                graph[i][j] = input.charAt(j);
+        map = new int[r][c];
+        isVisited = new boolean[26];
+        for (int i = 0; i < r; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < c; j++) {
+                map[i][j] = line.charAt(j) - 'A';
             }
         }
-        alphabet = new HashSet<>(); // HashSet 초기화
-        back(0, 0, 1); //
-        System.out.println(answer);
+        isVisited[map[0][0]] = true; // 시작 위치 방문 처리
+        dfs(0, 0, 1); // 시작 위치 포함하므로 cnt를 1로 시작
+        System.out.println(ans);
     }
-    static void back(int x, int y, int count) {
-        answer = Math.max(answer, count);
-        alphabet.add(graph[x][y]);
+
+    static void dfs(int x, int y, int cnt) {
+        ans = Math.max(ans, cnt);
         for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx >= 0 && nx < R && ny >= 0 && ny < C) {
-                if (!alphabet.contains(graph[nx][ny])) { // 처음 방문한 알파벳일 경우
-                    back(nx, ny, count + 1);
-                }
+            int nr = x + dr[i];
+            int nc = y + dc[i];
+            if (nr < 0 || nc < 0 || nr >= r || nc >= c) continue;
+            if (!isVisited[map[nr][nc]]) { // 방문하지 않은 알파벳일 경우
+                isVisited[map[nr][nc]] = true;
+                dfs(nr, nc, cnt + 1);
+                isVisited[map[nr][nc]] = false; // 백트래킹
             }
         }
-        alphabet.remove(graph[x][y]); // 이전 상태로 돌아가기 위해 제거
     }
 }
